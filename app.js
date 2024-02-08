@@ -10,8 +10,10 @@ const lockButton = document.querySelectorAll('.lock');
 const closeAdjustments = document.querySelectorAll('.close-adjusment');
 const sliderContainers = document.querySelectorAll(".sliders");
 let initialColors;
+let savedPaletts = [];
 
-generateBtn.addEventListener('click', randomColors)
+
+generateBtn.addEventListener('click', randomColors);
 
 sliders.forEach(slider => {
     slider.addEventListener("input", hslControls);
@@ -34,28 +36,35 @@ popup.addEventListener('transitionend', () => {
     const popupBox = popup.children[0];
     popup.classList.remove('active');
     popupBox.classList.remove('active');
-})
+});
 adjustButton.forEach((button, index) => {
     button.addEventListener('click', () => {
         openAdjustmentPanel(index);
-    })
-})
+    });
+});
 closeAdjustments.forEach((button, index) => {
     button.addEventListener("click", () => {
         closeAdjustmentPanel(index);
-    })
-})
+    });
+});
+
+lockButton.forEach((button, index) => {
+    button.addEventListener("click", (e) => { getLock(); })
+
+});
 
 function randomColors() {
     initialColors = [];
+    console.log(initialColors);
     colorDivs.forEach((div, index) => {
         const hexText = div.children[0];
         const randomColor = generateHex();
 
-        console.log(hexText.innerText);
+        // console.log(hexText.innerText);
 
         if (div.classList.contains("locked")) {
-            initialColors.push(hexText.innerText)
+            initialColors.push(hexText.innerText);
+            return;
         } else {
             initialColors.push(chroma(randomColor).hex());
         }
@@ -72,6 +81,7 @@ function randomColors() {
         const saturation = sliders[2];
 
         colorizeSliders(color, hue, brightness, saturation);
+
     });
 
     resetInputs();
@@ -181,5 +191,69 @@ function openAdjustmentPanel(index) {
 function closeAdjustmentPanel(index) {
     sliderContainers[index].classList.remove("active");
 }
+// function lockLayer(e, index) {
+//     const lockSVG = e.target.children[e];
+//     const activeBg = colorDivs[index];
+//     activeBg.classList.toggle("locked");
+
+//     if (lockSVG.classList.contains("fa-lock-open")) {
+//         e.target.innerHTML = '<i class="fa-solid fa-lock"></i>';
+//     } else {
+//         e.target.innerHTML = '<i class="fa-solid fa-lock-open"></i>';
+//     }
+// }
+
+// Implement Save to palette and LOCAL STORAGE STUFF
+const saveBtn = document.querySelector(".save");
+const submitSave = document.querySelector(".submit-save");
+const closeSave = document.querySelector(".close-save");
+const saveContainer = document.querySelector(".save-container");
+const saveInput = document.querySelector(".save-container input");
+
+// console.log(saveBtn);
+saveBtn.addEventListener("click", openPalette);
+closeSave.addEventListener("click", closePalette)
+
+function openPalette(e) {
+    const popup = saveContainer.children[0];
+    saveContainer.classList.add('active');
+    popup.classList.add('active');
+}
+function closePalette() {
+    const popup = saveContainer.children[0];
+    saveContainer.classList.remove('active');
+    popup.classList.add('remove');
+}
+function savePalette(e) {
+    saveContainer.classList.remove("active");
+    popup.classList.remove("active");
+    const name = saveInput.value;
+    const colors = [];
+    currentHexes.forEach(hex => {
+        colors.push(hex.innerText);
+    });
+}
 
 randomColors();
+
+
+let getLock = () => {
+    // if (document.querySelector('.fa-lock-open').classList.contains('fa-lock-open')) {
+    //     document.querySelector('.fa-lock-open').classList.add('fa-lock');
+    //     document.querySelector('.fa-lock-open').classList.remove('fa-lock-open');
+    //     // let lockVar = [];
+
+    //     // lockVar.push(initialColors[4])
+
+    //     // document.querySelector(".colors > div:nth-child(5)").style.backgroundColor = lockVar;
+
+    //     console.log("Locked");
+    // } else if (document.querySelector('.fa-lock').classList.contains('fa-lock')) {
+    //     document.querySelector('.fa-lock').classList.add('fa-lock-open');
+    //     document.querySelector('.fa-lock').classList.remove('fa-lock');
+
+    // }
+
+    console.log("LOCKED");
+
+}
